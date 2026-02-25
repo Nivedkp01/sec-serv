@@ -1,29 +1,35 @@
 ---
-- name: secure ssh and admin user
+- name: Hardening and Verification Playbook
   hosts: my_servers
   become: yes
   tasks:
-    - name: create admin user
+    - name: Create admin user
       user:
         name: admin
         shell: /bin/bash
         state: present
-
-    - name: add admin user to sudo group
-      user:
-        name: admin
-        groups: wheel  # Changed from 'sudo' to 'wheel' for Amazon Linux
+        groups: wheel
         append: yes
-    
-    - name: change the ssh port to 2222
+
+    - name: Disable Root Login via SSH
       lineinfile:
         path: /etc/ssh/sshd_config
-        regexp: '^#?Port 22'
-        line: 'Port 2222'
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin no'
       notify: restart ssh
 
-  handlers:
-    - name: restart ssh
-      service:
-        name: sshd    # Changed from 'ssh' to 'sshd'
-        state: restarted
+    - name: Ensure Password Authentication is Disabled
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+      notify: restart ssh
+
+    - name: Set a custom Welcome Banner (MOTD)
+      copy:
+        dest: /etc/motd
+        content: |
+          **************************************************
+          WELCOME TO SECURE SERVER: Managed by Jenkins/Ansible
+          Authorized Access Only!
+          **************************************************
