@@ -8,13 +8,6 @@
         name: admin
         shell: /bin/bash
         state: present
-
-    - name: add admin user to sudo group
-      user:
-        name: admin
-        groups: sudo
-        append: yes
-    
     - name: change the ssh port to 2222
       lineinfile:
         path: /etc/ssh/sshd_config
