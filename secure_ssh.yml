@@ -33,3 +33,9 @@
           WELCOME TO SECURE SERVER: Managed by Jenkins/Ansible
           Authorized Access Only!
           **************************************************
+
+  handlers:
+    - name: restart ssh
+      service:
+        name: sshd
+        state: restarted
