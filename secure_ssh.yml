@@ -8,6 +8,13 @@
         name: admin
         shell: /bin/bash
         state: present
+
+    - name: add admin user to sudo group
+      user:
+        name: admin
+        groups: wheel  # Changed from 'sudo' to 'wheel' for Amazon Linux
+        append: yes
+    
     - name: change the ssh port to 2222
       lineinfile:
         path: /etc/ssh/sshd_config
@@ -16,7 +23,7 @@
       notify: restart ssh
 
   handlers:
-      - name: restart ssh
-        service:
-          name: ssh
-          state: restarted
+    - name: restart ssh
+      service:
+        name: sshd    # Changed from 'ssh' to 'sshd'
+        state: restarted
